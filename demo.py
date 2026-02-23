@@ -210,7 +210,6 @@ Key Points:
   • doc_id inherited from source curation
 """,
         "commands": [
-            ("Reset and run curation first", "make reset && make go bls_employment_stats v1.0.0"),
             ("Execute semantic projection", "make semantic bls_employment_ontology"),
         ],
         "observe": [
