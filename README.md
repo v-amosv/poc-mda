@@ -1,4 +1,4 @@
-# MDA POC v2 - Manifest-Driven Architecture
+# MDA POC - Manifest-Driven Architecture
 
 A proof-of-concept implementation demonstrating a **Manifest-Driven Architecture** with a three-plane design:
 
@@ -61,7 +61,7 @@ Download and install from [Adoptium](https://adoptium.net/temurin/releases/?vers
 
 ```bash
 # Clone the repository
-git clone https://github.com/USAFacts/poc-manifest-driven-architecture.git
+git clone hhttps://github.com/v-amosv/poc-mda.git
 
 # Install dependencies (creates .venv automatically)
 uv sync
@@ -350,7 +350,7 @@ make show <manifest> [version]      # Show manifest content
 ## Project Structure
 
 ```
-poc-manifest-driven-architecture/
+poc-mda/
 ├── mda_platform/             # Core platform implementation
 │   ├── control_plane/        # Registry, Manifest Store, Orchestrator
 │   │   ├── registry/         # Schemas, parsers, data models
@@ -469,7 +469,7 @@ uv sync  # Reinstalls all dependencies
 ### Module not found errors
 Make sure you're running from the project root with `uv run`:
 ```bash
-cd mda-poc-v2
+cd poc-mda
 uv run trigger.py census_population
 ```
 

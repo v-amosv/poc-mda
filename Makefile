@@ -278,14 +278,16 @@ full-pipeline:
 # LIST - List various structures and files
 # ============================================================
 list:
-	@$(eval TARGET := $(word 2,$(MAKECMDGOALS)))
-	@$(eval BRANCH := $(word 3,$(MAKECMDGOALS)))
-	@if [ -z "$(TARGET)" ]; then \
+	@# Skip if called as argument to demo (e.g., make demo list)
+	@if [ "$(word 1,$(MAKECMDGOALS))" = "demo" ]; then exit 0; fi; \
+	TARGET="$(word 2,$(MAKECMDGOALS))"; \
+	BRANCH="$(word 3,$(MAKECMDGOALS))"; \
+	if [ -z "$$TARGET" ]; then \
 		echo "❌ Usage: make list <target> [branch]"; \
 		echo "   Targets: platform, registry, manifests, wild, raw, fact, evidence"; \
 		exit 1; \
-	fi
-	@case "$(TARGET)" in \
+	fi; \
+	case "$$TARGET" in \
 		platform) \
 			echo "============================================================"; \
 			echo "📂 PLATFORM STRUCTURE"; \
@@ -320,70 +322,70 @@ list:
 			echo "============================================================"; \
 			echo "📋 REGISTRY MANIFESTS"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/control_plane/registry -name "*.json" -type f 2>/dev/null | sort | \
 					sed 's|mda_platform/control_plane/registry/[^/]*/manifests/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/control_plane/registry/$(BRANCH) -name "*.json" -type f 2>/dev/null | sort | \
-					sed 's|mda_platform/control_plane/registry/$(BRANCH)/manifests/||' || echo "  (empty)"; \
+				find mda_platform/control_plane/registry/$$BRANCH -name "*.json" -type f 2>/dev/null | sort | \
+					sed 's|mda_platform/control_plane/registry/'$$BRANCH'/manifests/||' || echo "  (empty)"; \
 			fi;; \
 		manifests) \
 			echo "============================================================"; \
 			echo "📋 MANIFEST STORE"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/control_plane/manifest_store/store -name "*.json" -path "*/manifests/*" -type f 2>/dev/null | sort | \
 					sed 's|mda_platform/control_plane/manifest_store/store/[^/]*/manifests/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/control_plane/manifest_store/store/$(BRANCH) -name "*.json" -path "*/manifests/*" -type f 2>/dev/null | sort | \
-					sed 's|mda_platform/control_plane/manifest_store/store/$(BRANCH)/manifests/||' || echo "  (empty)"; \
+				find mda_platform/control_plane/manifest_store/store/$$BRANCH -name "*.json" -path "*/manifests/*" -type f 2>/dev/null | sort | \
+					sed 's|mda_platform/control_plane/manifest_store/store/'$$BRANCH'/manifests/||' || echo "  (empty)"; \
 			fi;; \
 		wild) \
 			echo "============================================================"; \
 			echo "🌿 WILD STORE"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/storage_plane/wild -type f ! -name ".*" 2>/dev/null | sort | \
 					sed 's|mda_platform/storage_plane/wild/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/storage_plane/wild/$(BRANCH) -type f ! -name ".*" 2>/dev/null | sort | \
-					sed 's|mda_platform/storage_plane/wild/$(BRANCH)/||' || echo "  (empty)"; \
+				find mda_platform/storage_plane/wild/$$BRANCH -type f ! -name ".*" 2>/dev/null | sort | \
+					sed 's|mda_platform/storage_plane/wild/'$$BRANCH'/||' || echo "  (empty)"; \
 			fi;; \
 		raw) \
 			echo "============================================================"; \
 			echo "📥 RAW STORE"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/storage_plane/raw -name "*.json" -type f 2>/dev/null | sort | \
 					sed 's|mda_platform/storage_plane/raw/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/storage_plane/raw/$(BRANCH) -name "*.json" -type f 2>/dev/null | sort | \
-					sed 's|mda_platform/storage_plane/raw/$(BRANCH)/||' || echo "  (empty)"; \
+				find mda_platform/storage_plane/raw/$$BRANCH -name "*.json" -type f 2>/dev/null | sort | \
+					sed 's|mda_platform/storage_plane/raw/'$$BRANCH'/||' || echo "  (empty)"; \
 			fi;; \
 		fact) \
 			echo "============================================================"; \
 			echo "📊 FACT STORE"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/storage_plane/fact_store -name "*.json" -type f 2>/dev/null | sort | \
 					sed 's|mda_platform/storage_plane/fact_store/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/storage_plane/fact_store/$(BRANCH) -name "*.json" -type f 2>/dev/null | sort | \
-					sed 's|mda_platform/storage_plane/fact_store/$(BRANCH)/||' || echo "  (empty)"; \
+				find mda_platform/storage_plane/fact_store/$$BRANCH -name "*.json" -type f 2>/dev/null | sort | \
+					sed 's|mda_platform/storage_plane/fact_store/'$$BRANCH'/||' || echo "  (empty)"; \
 			fi;; \
 		evidence) \
 			echo "============================================================"; \
 			echo "🔍 EVIDENCE STORE"; \
 			echo "============================================================"; \
-			if [ -z "$(BRANCH)" ]; then \
+			if [ -z "$$BRANCH" ]; then \
 				find mda_platform/storage_plane/evidence_store -name "*.json" -type f 2>/dev/null | sort | \
 					sed 's|mda_platform/storage_plane/evidence_store/||' || echo "  (empty)"; \
 			else \
-				find mda_platform/storage_plane/evidence_store/$(BRANCH) -name "*.json" -type f 2>/dev/null | sort | \
-					sed 's|mda_platform/storage_plane/evidence_store/$(BRANCH)/||' || echo "  (empty)"; \
+				find mda_platform/storage_plane/evidence_store/$$BRANCH -name "*.json" -type f 2>/dev/null | sort | \
+					sed 's|mda_platform/storage_plane/evidence_store/'$$BRANCH'/||' || echo "  (empty)"; \
 			fi;; \
 		*) \
-			echo "❌ Unknown target: $(TARGET)"; \
+			echo "❌ Unknown target: $$TARGET"; \
 			echo "   Valid targets: platform, registry, manifests, wild, raw, fact, evidence";; \
 	esac
 
