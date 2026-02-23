@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.1.0",
+  "semantic_definition": "Annual population estimates by US state from Census Bureau (schema v1.1.0: source column 'pop' mapped to 'population')",
+  "column_count": 4,
+  "columns": [
+    {
+      "column_name": "state",
+      "data_type": "string",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Full name of the US state",
+      "quality_checks": [
+        {"check": "not_null"}
+      ]
+    },
+    {
+      "column_name": "year",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Calendar year of the estimate",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "range", "params": {"min": 2000, "max": 2030}}
+      ]
+    },
+    {
+      "column_name": "population",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Total population count (mapped from source column 'pop')",
+      "source_column": "pop",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "positive"}
+      ]
+    },
+    {
+      "column_name": "growth_rate",
+      "data_type": "float",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Year-over-year population growth rate as decimal",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "range", "params": {"min": -0.5, "max": 0.5}}
+      ]
+    }
+  ]
+}

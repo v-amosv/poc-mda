@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "semantic_definition": "Monthly employment statistics by US state from Bureau of Labor Statistics",
+  "column_count": 6,
+  "columns": [
+    {
+      "column_name": "state",
+      "data_type": "string",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Full name of the US state",
+      "quality_checks": [
+        {"check": "not_null"}
+      ]
+    },
+    {
+      "column_name": "year",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Calendar year of the observation",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "range", "params": {"min": 2000, "max": 2030}}
+      ]
+    },
+    {
+      "column_name": "month",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Calendar month (1-12)",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "range", "params": {"min": 1, "max": 12}}
+      ]
+    },
+    {
+      "column_name": "employment",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Total number of employed persons in the state",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "positive"}
+      ]
+    },
+    {
+      "column_name": "unemployment_rate",
+      "data_type": "float",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Unemployment rate as a percentage (0-100)",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "range", "params": {"min": 0, "max": 100}}
+      ]
+    },
+    {
+      "column_name": "labor_force",
+      "data_type": "integer",
+      "constraints": {"is_nullable": false},
+      "semantic_definition": "Total labor force population in the state",
+      "quality_checks": [
+        {"check": "not_null"},
+        {"check": "positive"}
+      ]
+    }
+  ]
+}

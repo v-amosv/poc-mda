@@ -1,0 +1,60 @@
+manifest:
+  # =========================================================================
+  # SEMANTIC MANIFEST - BLS Employment Ontology
+  # =========================================================================
+  # This manifest defines how physical Curation Facts are projected into
+  # the Macroeconomics semantic domain.
+  #
+  # Workflow: Source Bind → Project-and-Translate → Enrich with Context
+  # =========================================================================
+
+  identity:
+    name: "bls_employment_ontology"
+    domain: "macroeconomics"
+    agency: "bls"
+    owner: "data-foundation"
+
+  evolution:
+    manifest_version: "1.0.0"
+    manifest_schema_version: "1.0.0"
+    engine: "semantic"
+    engine_version: "1.0.0"
+
+  # =========================================================================
+  # INTENT: Source Binding + Projection Rules
+  # =========================================================================
+  intent:
+    # The "Source Bind" - Links this semantic layer to a Curation Fact
+    source:
+      manifest_ref: "bls_employment_stats"
+      layer: "curation"
+    
+    # The "Project and Translate" logic
+    projection:
+      component:
+        path: "lib.engines.semantics.v1.ontology_mapper"
+        version: "1.0.0"
+      mapping:
+        - { source_key: "state_fips",    target_concept: "region_code" }
+        - { source_key: "state_name",    target_concept: "region_name" }
+        - { source_key: "year",          target_concept: "observation_year" }
+        - { source_key: "month",         target_concept: "observation_month" }
+        - { source_key: "employment",    target_concept: "employment_count" }
+        - { source_key: "unemployment",  target_concept: "unemployment_count" }
+        - { source_key: "labor_force",   target_concept: "labor_force_total" }
+
+    # The "Enrichment" context - semantic metadata
+    context:
+      unit_system: "count"
+      frequency: "monthly"
+      currency: null
+      scale_factor: 1
+      ontology_version: "macroeconomics.v1"
+
+  # =========================================================================
+  # GOVERNANCE
+  # =========================================================================
+  governance:
+    classification: "public"
+    retention_days: 365
+    pii_fields: []

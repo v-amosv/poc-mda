@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mda-platform.usafacts.org/schemas/semantics/manifest/v2.0.0",
+  "title": "Semantic Manifest Schema v2.0.0",
+  "description": "JSON Schema for validating Semantic Engine manifests. Defines the contract for ontology mapping and semantic projection.",
+  "type": "object",
+  "required": ["manifest"],
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "required": ["identity", "evolution", "agency", "data_model"],
+      "properties": {
+        "identity": {
+          "type": "object",
+          "description": "Unique identification of this manifest",
+          "required": ["name", "domain", "layer"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Unique manifest identifier",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "domain": {
+              "type": "string",
+              "description": "Business domain classification"
+            },
+            "layer": {
+              "type": "string",
+              "enum": ["semantics"],
+              "description": "Must be 'semantics' for semantic manifests"
+            },
+            "description": {
+              "type": "string",
+              "description": "Human-readable description"
+            }
+          }
+        },
+        "evolution": {
+          "type": "object",
+          "description": "Version and schema tracking",
+          "required": ["version", "manifest_schema_version"],
+          "properties": {
+            "version": {
+              "type": "string",
+              "description": "Semantic version of this manifest",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "manifest_schema_version": {
+              "type": "string",
+              "description": "Version of the manifest schema this conforms to",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "changelog": {
+              "type": "string",
+              "description": "Summary of changes in this version"
+            }
+          }
+        },
+        "agency": {
+          "type": "object",
+          "description": "Execution directives - how to process this manifest",
+          "required": ["engine"],
+          "properties": {
+            "engine": {
+              "type": "object",
+              "required": ["type", "version"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["python"],
+                  "description": "Semantic engine type"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Engine version",
+                  "pattern": "^v\\d+$"
+                }
+              }
+            },
+            "component": {
+              "type": "string",
+              "description": "Semantic component to invoke (e.g., ontology_mapper)"
+            }
+          }
+        },
+        "data_model": {
+          "type": "object",
+          "description": "Semantic projection definition",
+          "properties": {
+            "source_manifest": {
+              "type": "string",
+              "description": "Reference to upstream curation manifest"
+            },
+            "ontology": {
+              "type": "object",
+              "description": "Ontology mapping definitions",
+              "properties": {
+                "namespace": {
+                  "type": "string"
+                },
+                "concepts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "relationships": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "projections": {
+              "type": "array",
+              "description": "Field-to-concept mappings",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source_field": {
+                    "type": "string"
+                  },
+                  "concept": {
+                    "type": "string"
+                  },
+                  "transformation": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

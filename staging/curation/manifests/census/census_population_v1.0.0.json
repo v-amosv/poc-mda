@@ -1,0 +1,76 @@
+{
+  "identity": {
+    "name": "census_population",
+    "domain": "demographics",
+    "owner_squad": "data-foundation"
+  },
+  "evolution": {
+    "manifest_version": "1.0.0",
+    "manifest_schema_version": "1.0.0",
+    "data_schema_version": "1.0.0",
+    "engine": "python",
+    "engine_version": "1.0.0"
+  },
+  "reference_data": {
+    "state_mappings": {
+      "path": "state_mappings",
+      "version": "1.0.0"
+    }
+  },
+  "data_model": {
+    "path": "census_population_v1.0.0",
+    "version": "1.0.0"
+  },
+  "dataset": {
+    "path": "datasets/population_v1.0.0.csv",
+    "target": "wild/census/population.csv"
+  },
+  "intent": {
+    "ingestion": {
+      "component": {
+        "path": "v1.ingest_default.run",
+        "version": "1.0.0"
+      },
+      "params": {
+        "source_url": "wild/census/population.csv",
+        "target_path": "raw/census/"
+      }
+    },
+    "processing": [
+      {
+        "step": "parse_csv",
+        "component": {
+          "path": "v1.csv_parser.run",
+          "version": "1.0.0"
+        },
+        "params": {
+          "delimiter": ",",
+          "header_row": 0
+        }
+      },
+      {
+        "step": "validate_quality",
+        "component": {
+          "path": "v1.validate_quality.run",
+          "version": "1.0.0"
+        },
+        "params": {}
+      },
+      {
+        "step": "write_facts",
+        "component": {
+          "path": "v1.fact_store_writer.run",
+          "version": "1.0.0"
+        },
+        "params": {
+          "output_path": "fact-store/",
+          "format": "json"
+        }
+      }
+    ]
+  },
+  "governance": {
+    "retention_days": 730,
+    "classification": "public"
+  }
+}

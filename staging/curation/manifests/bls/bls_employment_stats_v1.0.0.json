@@ -1,0 +1,84 @@
+{
+  "identity": {
+    "name": "bls_employment_stats",
+    "domain": "macroeconomics",
+    "owner_squad": "data-foundation"
+  },
+  "evolution": {
+    "manifest_version": "1.0.0",
+    "manifest_schema_version": "1.0.0",
+    "data_schema_version": "1.0.0",
+    "engine": "python",
+    "engine_version": "1.0.0"
+  },
+  "reference_data": {
+    "state_mappings": {
+      "path": "state_mappings",
+      "version": "1.0.0"
+    }
+  },
+  "data_model": {
+    "path": "bls_employment_stats_v1.0.0",
+    "version": "1.0.0"
+  },
+  "intent": {
+    "ingestion": {
+      "component": {
+        "path": "lib.engines.curation.v1.ingest_default.run",
+        "version": "1.0.0"
+      },
+      "params": {
+        "source_url": "wild/bls/employment_stats.csv",
+        "target_path": "raw/bls/"
+      }
+    },
+    "processing": [
+      {
+        "step": "parse_csv",
+        "component": {
+          "path": "lib.engines.curation.v1.csv_parser.run",
+          "version": "1.0.0"
+        },
+        "params": {
+          "delimiter": ",",
+          "header_row": 0
+        }
+      },
+      {
+        "step": "enrich_state",
+        "component": {
+          "path": "lib.engines.curation.v1.enrich_state.run",
+          "version": "1.0.0"
+        },
+        "params": {
+          "source_field": "state",
+          "target_field": "state_code",
+          "mapping_ref": "state_mappings"
+        }
+      },
+      {
+        "step": "validate_quality",
+        "component": {
+          "path": "lib.engines.curation.v1.validate_quality.run",
+          "version": "1.0.0"
+        },
+        "params": {}
+      },
+      {
+        "step": "write_facts",
+        "component": {
+          "path": "lib.engines.curation.v1.fact_store_writer.run",
+          "version": "1.0.0"
+        },
+        "params": {
+          "output_path": "fact-store/",
+          "format": "json"
+        }
+      }
+    ]
+  },
+  "governance": {
+    "retention_days": 730,
+    "classification": "public"
+  }
+}

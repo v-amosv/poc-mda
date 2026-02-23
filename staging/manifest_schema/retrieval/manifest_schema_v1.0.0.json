@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mda-platform.usafacts.org/schemas/retrieval/manifest/v1.0.0",
+  "title": "Retrieval Manifest Schema v1.0.0",
+  "description": "JSON Schema for validating V1 Retrieval Engine manifests (JSON format, flat structure).",
+  "type": "object",
+  "required": ["identity", "evolution", "agency", "data_model"],
+  "properties": {
+    "identity": {
+      "type": "object",
+      "description": "Unique identification of this manifest",
+      "required": ["name", "domain", "layer"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "layer": {
+          "type": "string",
+          "enum": ["retrieval"]
+        }
+      }
+    },
+    "evolution": {
+      "type": "object",
+      "required": ["version", "manifest_schema_version"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "manifest_schema_version": {
+          "type": "string",
+          "pattern": "^1\\.\\d+\\.\\d+$"
+        }
+      }
+    },
+    "agency": {
+      "type": "object",
+      "required": ["engine"],
+      "properties": {
+        "engine": {
+          "type": "object",
+          "required": ["type", "version"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["python"]
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^v\\d+$"
+            }
+          }
+        },
+        "component": {
+          "type": "string"
+        }
+      }
+    },
+    "data_model": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array"
+        },
+        "join_strategy": {
+          "type": "object"
+        },
+        "output": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

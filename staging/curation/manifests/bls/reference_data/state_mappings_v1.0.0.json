@@ -1,0 +1,14 @@
+{
+  "mappings": {
+    "California": "CA",
+    "Texas": "TX",
+    "Florida": "FL",
+    "New York": "NY",
+    "Pennsylvania": "PA",
+    "Illinois": "IL",
+    "Ohio": "OH",
+    "Georgia": "GA",
+    "North Carolina": "NC",
+    "Michigan": "MI"
+  }
+}

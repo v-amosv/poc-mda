@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mda-platform.usafacts.org/schemas/retrieval/manifest/v2.0.0",
+  "title": "Retrieval Manifest Schema v2.0.0",
+  "description": "JSON Schema for validating Retrieval Engine manifests. Defines the contract for cross-domain joins and knowledge synthesis.",
+  "type": "object",
+  "required": ["manifest"],
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "required": ["identity", "evolution", "agency", "data_model"],
+      "properties": {
+        "identity": {
+          "type": "object",
+          "description": "Unique identification of this manifest",
+          "required": ["name", "domain", "layer"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Unique manifest identifier",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "domain": {
+              "type": "string",
+              "description": "Business domain classification"
+            },
+            "layer": {
+              "type": "string",
+              "enum": ["retrieval"],
+              "description": "Must be 'retrieval' for retrieval manifests"
+            },
+            "description": {
+              "type": "string",
+              "description": "Human-readable description"
+            }
+          }
+        },
+        "evolution": {
+          "type": "object",
+          "description": "Version and schema tracking",
+          "required": ["version", "manifest_schema_version"],
+          "properties": {
+            "version": {
+              "type": "string",
+              "description": "Semantic version of this manifest",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "manifest_schema_version": {
+              "type": "string",
+              "description": "Version of the manifest schema this conforms to",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "changelog": {
+              "type": "string",
+              "description": "Summary of changes in this version"
+            }
+          }
+        },
+        "agency": {
+          "type": "object",
+          "description": "Execution directives - how to process this manifest",
+          "required": ["engine"],
+          "properties": {
+            "engine": {
+              "type": "object",
+              "required": ["type", "version"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["python"],
+                  "description": "Retrieval engine type"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Engine version",
+                  "pattern": "^v\\d+$"
+                }
+              }
+            },
+            "component": {
+              "type": "string",
+              "description": "Retrieval component to invoke (e.g., temporal_joiner)"
+            }
+          }
+        },
+        "data_model": {
+          "type": "object",
+          "description": "Retrieval query definition",
+          "properties": {
+            "sources": {
+              "type": "array",
+              "description": "Semantic manifests to join",
+              "items": {
+                "type": "object",
+                "required": ["manifest_ref", "alias"],
+                "properties": {
+                  "manifest_ref": {
+                    "type": "string",
+                    "description": "Reference to semantic manifest"
+                  },
+                  "alias": {
+                    "type": "string",
+                    "description": "Alias for use in join conditions"
+                  },
+                  "filters": {
+                    "type": "object",
+                    "description": "Filters to apply to this source"
+                  }
+                }
+              }
+            },
+            "join_strategy": {
+              "type": "object",
+              "description": "How to join the sources",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["temporal", "spatial", "attribute"],
+                  "description": "Join strategy type"
+                },
+                "keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Fields to join on"
+                },
+                "tolerance": {
+                  "type": "object",
+                  "description": "Join tolerance settings"
+                }
+              }
+            },
+            "output": {
+              "type": "object",
+              "description": "Output specification",
+              "properties": {
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "format": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

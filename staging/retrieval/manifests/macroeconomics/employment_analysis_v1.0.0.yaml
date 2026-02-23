@@ -1,0 +1,100 @@
+manifest:
+  # =========================================================================
+  # RETRIEVAL MANIFEST - Employment Analysis
+  # =========================================================================
+  # Pattern: "Fan-In-and-Join" - Collect multiple semantic projections and join them
+  #
+  # This manifest demonstrates the simplest retrieval: single-source passthrough
+  # A full retrieval would reference multiple semantic manifests and join them.
+  # =========================================================================
+
+  identity:
+    name: "employment_analysis"
+    domain: "macroeconomics"
+    owner: "data-foundation"
+
+  evolution:
+    manifest_version: "1.0.0"
+    manifest_schema_version: "1.0.0"
+    engine: "retrieval_engine"
+    engine_version: "v1"
+
+  # =========================================================================
+  # INTENT: Question + Sources + Synthesis
+  # =========================================================================
+  intent:
+    # What question does this retrieval answer?
+    question: "What is the state-level employment and unemployment situation?"
+    
+    # Output format
+    output_format: jsonld  # jsonld, flat_csv, parquet
+    
+    # Sources to fan-in (semantic manifest references)
+    sources:
+      primary:
+        manifest_ref: bls_employment_ontology
+        role: primary
+        description: "BLS employment metrics projected to macroeconomics ontology"
+      
+      # Secondary source (commented - for demo we do single-source)
+      # secondary:
+      #   manifest_ref: census_population_ontology
+      #   role: enrichment
+      #   description: "Census population data for per-capita calculations"
+
+  # =========================================================================
+  # WORKFLOW: Steps executed by retrieval engine
+  # =========================================================================
+  workflow:
+    engine: retrieval_engine
+    library_version: v1
+    
+    steps:
+      - name: fetch_sources
+        description: "Load semantic projections from semantic_store"
+        # Implicit step - interpreter handles this
+      
+      - name: join_sources
+        component: temporal_joiner
+        params:
+          join_key: observation_year
+          join_type: left_outer
+          sts_filter: null  # No minimum traceability required for POC
+      
+      - name: format_output
+        description: "Format to JSON-LD structure"
+        # Implicit step - interpreter handles this
+
+  # =========================================================================
+  # OUTPUT: JSON-LD formatting
+  # =========================================================================
+  output:
+    # JSON-LD context for semantic web compatibility
+    jsonld_context:
+      "@vocab": "https://schema.usafacts.org/ontology/macroeconomics#"
+      employment: "https://schema.usafacts.org/ontology/macroeconomics#employment"
+      unemployment: "https://schema.usafacts.org/ontology/macroeconomics#unemployment"
+      region: "https://schema.org/Place"
+    
+    # Fields to include in output (empty = all)
+    include_fields: []
+    
+    # Fields to exclude from output
+    exclude_fields:
+      - __context__
+      - __join__
+
+  # =========================================================================
+  # GOVERNANCE
+  # =========================================================================
+  governance:
+    classification: "public"
+    retention_days: 30
+    pii_fields: []
+
+  # =========================================================================
+  # LINEAGE
+  # =========================================================================
+  lineage:
+    provenance: user_request
+    trigger_type: retrieve.py
